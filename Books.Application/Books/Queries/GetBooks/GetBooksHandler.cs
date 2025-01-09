@@ -1,21 +1,20 @@
-﻿using Books.Application.CQRS;
+﻿using Books.Application.Contracts;
+using Books.Application.CQRS;
 using Books.Application.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace Books.Application.Books.Queries.GetBooks
 {
-    public class GetBookssHandler(IBooksCatalogDbContext dbContext)
+    public class GetBookssHandler(IBooksRepository _booksRepository)
         : IQueryHandler<GetBooksQuery, GetBooksResult>
     {
         public async Task<GetBooksResult> Handle(GetBooksQuery query, CancellationToken cancellationToken)
         {
+            var total = await _booksRepository.GetBooksTotalAsync(cancellationToken);
 
-            var totalCount = await dbContext.Books.LongCountAsync(cancellationToken);
+            var books = await _booksRepository.GetBooksAsync(query, cancellationToken);
 
-            var books = await dbContext.Books
-                           .ToListAsync(cancellationToken);
-
-            return new GetBooksResult(books.ToBookDtos());
+            var result =  new GetBooksResult(books.ToBookDtos(), total);
+            return result;
         }
     }
 }

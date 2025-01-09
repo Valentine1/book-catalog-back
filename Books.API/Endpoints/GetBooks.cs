@@ -1,20 +1,20 @@
 ﻿using Books.Application.Books.Queries.GetBooks;
 using Books.Application.Dtos;
 using Carter;
-using MediatR;
 using Mapster;
+using MediatR;
 
 namespace Books.API.Endpoints
 {
-    public record GetBooksResponse(IEnumerable<BookDto> Books);
+    public record GetBooksResponse(IEnumerable<BookDto> Books, int TotalCount);
 
     public class GetBooks : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/api/books", async (ISender sender) =>
+            app.MapGet("books", async ([AsParameters] GetBooksQuery request, ISender sender) => 
             {
-                var result = await sender.Send(new GetBooksQuery());
+                var result = await sender.Send(request);
 
                 var response = result.Adapt<GetBooksResponse>();
 

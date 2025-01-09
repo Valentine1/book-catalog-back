@@ -1,4 +1,6 @@
 ﻿using Books.Application;
+using Books.Application.Contracts;
+using Books.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,7 @@ namespace Books.Infrastructure
                 options.UseSqlServer(connectionString);
             });
             services.AddScoped<IBooksCatalogDbContext, BooksCatalogDbContext>();
+            services.AddScoped<IBooksRepository, BooksRepository>();
 
             return services;
         }
