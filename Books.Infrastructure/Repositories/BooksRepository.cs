@@ -2,36 +2,37 @@
 using Books.Application.Contracts;
 using Books.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Books.Infrastructure.Repositories
 {
     public class BooksRepository(BooksCatalogDbContext _context) : IBooksRepository
     {
 
-        public async Task<int> GetBooksTotalAsync(CancellationToken cancellationToken)
+        public async Task<int> GetBooksTotalAsync(GetBooksQuery query, CancellationToken cancellationToken)
         {
-            var totalCount = await _context.Books.CountAsync(cancellationToken);
-            return totalCount;
+            var books = _context.Books.AsQueryable();
+            books = AddFiltering(query, books);
+            return await books.CountAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Book>> GetBooksAsync(GetBooksQuery query, CancellationToken cancellationToken)
         {
-           
             var books = _context.Books.AsQueryable();
-            if (!string.IsNullOrWhiteSpace(query.TitleSearch))
-            {
-                books = books.Where(b => EF.Functions.Like(b.Title, $"{query.TitleSearch}%"));
-            }
-            if (!string.IsNullOrWhiteSpace(query.AuthorSearch))
-            {
-                books = books.Where(b => EF.Functions.Like(b.Title, $"{query.AuthorSearch}%"));
-            }
-            if (!string.IsNullOrWhiteSpace(query.GenreSearch))
-            {
-                books = books.Where(b => EF.Functions.Like(b.Title, $"{query.GenreSearch}%"));
-            }
+            books = AddFiltering(query, books);
             var orderBy = query.OrderBy?.ToLower() ?? "title";
 
+            books = AddOrdering(query, books, orderBy);
+
+            return await books
+              .AsNoTracking()
+              .Skip(query.PageIndex * query.PageSize)
+              .Take(query.PageSize)
+              .ToListAsync(cancellationToken);
+        }
+
+        private static IQueryable<Book> AddOrdering(GetBooksQuery query, IQueryable<Book> books, string orderBy)
+        {
             books = orderBy switch
             {
                 "title" => query.IsAscending
@@ -45,14 +46,25 @@ namespace Books.Infrastructure.Repositories
                     : books.OrderByDescending(b => b.Genre),
                 _ => books.OrderBy(b => b.Title)
             };
+            return books;
+        }
 
-            books = books
-              .AsNoTracking()
-              .Skip(query.PageIndex * query.PageSize)
-              .Take(query.PageSize);
-            var result = await books.ToListAsync();
+        private static IQueryable<Book> AddFiltering(GetBooksQuery query, IQueryable<Book> books)
+        {
+            if (!string.IsNullOrWhiteSpace(query.TitleSearch))
+            {
+                books = books.Where(b => EF.Functions.Like(b.Title, $"{query.TitleSearch}%"));
+            }
+            if (!string.IsNullOrWhiteSpace(query.AuthorSearch))
+            {
+                books = books.Where(b => EF.Functions.Like(b.Author, $"{query.AuthorSearch}%"));
+            }
+            if (!string.IsNullOrWhiteSpace(query.GenreSearch))
+            {
+                books = books.Where(b => EF.Functions.Like(b.Genre, $"{query.GenreSearch}%"));
+            }
 
-            return result;
+            return books;
         }
     }
 }

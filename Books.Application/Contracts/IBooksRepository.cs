@@ -10,7 +10,7 @@ namespace Books.Application.Contracts
 {
     public interface IBooksRepository
     {
-        Task<int> GetBooksTotalAsync(CancellationToken cancellationToken);
+        Task<int> GetBooksTotalAsync(GetBooksQuery query, CancellationToken cancellationToken);
         Task<IEnumerable<Book>> GetBooksAsync(GetBooksQuery query, CancellationToken cancellationToken);
     }
 }

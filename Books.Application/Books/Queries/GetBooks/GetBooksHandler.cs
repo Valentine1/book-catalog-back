@@ -9,10 +9,9 @@ namespace Books.Application.Books.Queries.GetBooks
     {
         public async Task<GetBooksResult> Handle(GetBooksQuery query, CancellationToken cancellationToken)
         {
-            var total = await _booksRepository.GetBooksTotalAsync(cancellationToken);
+            var total = await _booksRepository.GetBooksTotalAsync(query, cancellationToken);
 
             var books = await _booksRepository.GetBooksAsync(query, cancellationToken);
-
             var result =  new GetBooksResult(books.ToBookDtos(), total);
             return result;
         }
