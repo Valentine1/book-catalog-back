@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Books.Application.Books.Queries.GetBooks;
+﻿using Books.Application.Books.Queries.GetBooks;
 using Books.Domain.Models;
+using Books.Domain.ValueObjects;
 
 namespace Books.Application.Contracts
 {
@@ -13,5 +9,7 @@ namespace Books.Application.Contracts
         Task<int> GetBooksTotalAsync(GetBooksQuery query, CancellationToken cancellationToken);
         Task<IEnumerable<Book>> GetBooksAsync(GetBooksQuery query, CancellationToken cancellationToken);
         Task<Book> CreateBookAsync(Book book, CancellationToken cancellationToken);
+        Task<Book?> GetBookByIdAsync(BookId bookId, CancellationToken cancellationToken);
+        Task<bool> UpdateBookAsync(Book book, CancellationToken cancellationToken);
     }
 }

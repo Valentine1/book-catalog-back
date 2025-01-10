@@ -3,7 +3,6 @@ using Books.Application.Dtos;
 using Carter;
 using Mapster;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Books.API.Endpoints
 {
@@ -14,7 +13,7 @@ namespace Books.API.Endpoints
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("books", async ([FromBody]CreateBookRequest request, ISender sender) =>
+            app.MapPost("books", async (CreateBookRequest request, ISender sender) =>
             {
                 var command = request.Adapt<CreateBookCommand>();
 

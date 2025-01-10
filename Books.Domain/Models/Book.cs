@@ -8,6 +8,17 @@ namespace Books.Domain.Models
         public string Author { get; private set; } = default!;
         public string Genre { get; private set; } = default!;
 
+        public void Update(string title, string author, string genre)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(title);
+            ArgumentException.ThrowIfNullOrWhiteSpace(author);
+            ArgumentException.ThrowIfNullOrWhiteSpace(genre);
+
+            Title = title;
+            Author = author;
+            Genre = genre;
+        }
+
         public static Book Create(string title, string author, string genre)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(title);
@@ -23,5 +34,6 @@ namespace Books.Domain.Models
 
             return book;
         }
+
     }
 }

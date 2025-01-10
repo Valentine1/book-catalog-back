@@ -1,8 +1,8 @@
 ﻿using Books.Application.Books.Queries.GetBooks;
 using Books.Application.Contracts;
 using Books.Domain.Models;
+using Books.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Books.Infrastructure.Repositories
 {
@@ -36,6 +36,19 @@ namespace Books.Infrastructure.Repositories
             _context.Books.Add(book);
             await _context.SaveChangesAsync(cancellationToken);
             return book;
+        }
+
+        public async Task<Book?> GetBookByIdAsync(BookId bookId, CancellationToken cancellationToken)
+        {
+            var book = await _context.Books.FindAsync([bookId], cancellationToken);
+            return book;
+        }
+
+        public async Task<bool> UpdateBookAsync(Book book, CancellationToken cancellationToken)
+        {
+            _context.Books.Update(book);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
         }
 
         private static IQueryable<Book> AddOrdering(GetBooksQuery query, IQueryable<Book> books, string orderBy)
