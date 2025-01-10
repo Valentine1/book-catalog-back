@@ -11,5 +11,6 @@ namespace Books.Application.Contracts
         Task<Book> CreateBookAsync(Book book, CancellationToken cancellationToken);
         Task<Book?> GetBookByIdAsync(BookId bookId, CancellationToken cancellationToken);
         Task<bool> UpdateBookAsync(Book book, CancellationToken cancellationToken);
+        Task<List<Book>> CreateBooksAsync(List<Book> books, CancellationToken cancellationToken);
     }
 }

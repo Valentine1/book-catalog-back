@@ -38,6 +38,13 @@ namespace Books.Infrastructure.Repositories
             return book;
         }
 
+        public async Task<List<Book>> CreateBooksAsync(List<Book> books, CancellationToken cancellationToken)
+        {
+            _context.Books.AddRange(books);
+            await _context.SaveChangesAsync(cancellationToken);
+            return books;
+        }
+
         public async Task<Book?> GetBookByIdAsync(BookId bookId, CancellationToken cancellationToken)
         {
             var book = await _context.Books.FindAsync([bookId], cancellationToken);
