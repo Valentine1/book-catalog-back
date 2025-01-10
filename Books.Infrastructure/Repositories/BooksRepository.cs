@@ -31,6 +31,13 @@ namespace Books.Infrastructure.Repositories
               .ToListAsync(cancellationToken);
         }
 
+        public async Task<Book> CreateBookAsync(Book book, CancellationToken cancellationToken)
+        {
+            _context.Books.Add(book);
+            await _context.SaveChangesAsync(cancellationToken);
+            return book;
+        }
+
         private static IQueryable<Book> AddOrdering(GetBooksQuery query, IQueryable<Book> books, string orderBy)
         {
             books = orderBy switch
@@ -66,5 +73,6 @@ namespace Books.Infrastructure.Repositories
 
             return books;
         }
+
     }
 }

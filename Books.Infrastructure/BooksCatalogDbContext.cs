@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
-using Books.Application;
 using Books.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Books.Infrastructure
 {
-    public class BooksCatalogDbContext : DbContext, IBooksCatalogDbContext
+    public class BooksCatalogDbContext : DbContext
     {
         public BooksCatalogDbContext(DbContextOptions<BooksCatalogDbContext> options)
             : base(options) { }

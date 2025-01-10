@@ -12,5 +12,6 @@ namespace Books.Application.Contracts
     {
         Task<int> GetBooksTotalAsync(GetBooksQuery query, CancellationToken cancellationToken);
         Task<IEnumerable<Book>> GetBooksAsync(GetBooksQuery query, CancellationToken cancellationToken);
+        Task<Book> CreateBookAsync(Book book, CancellationToken cancellationToken);
     }
 }

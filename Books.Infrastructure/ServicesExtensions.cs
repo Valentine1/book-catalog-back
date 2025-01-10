@@ -18,7 +18,6 @@ namespace Books.Infrastructure
             {
                 options.UseSqlServer(connectionString);
             });
-            services.AddScoped<IBooksCatalogDbContext, BooksCatalogDbContext>();
             services.AddScoped<IBooksRepository, BooksRepository>();
 
             return services;
